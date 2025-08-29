@@ -61,7 +61,45 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				}
+				},
+				// WebScraper AI Custom Colors
+				'scraper-bg': {
+					primary: 'hsl(var(--scraper-bg-primary))',
+					secondary: 'hsl(var(--scraper-bg-secondary))',
+					card: 'hsl(var(--scraper-bg-card))',
+					'card-hover': 'hsl(var(--scraper-bg-card-hover))',
+				},
+				'scraper-text': {
+					primary: 'hsl(var(--scraper-text-primary))',
+					secondary: 'hsl(var(--scraper-text-secondary))',
+					muted: 'hsl(var(--scraper-text-muted))',
+				},
+				'scraper-accent': {
+					primary: 'hsl(var(--scraper-accent-primary))',
+					secondary: 'hsl(var(--scraper-accent-secondary))',
+					success: 'hsl(var(--scraper-accent-success))',
+					warning: 'hsl(var(--scraper-accent-warning))',
+				},
+				'scraper-border': {
+					DEFAULT: 'hsl(var(--scraper-border))',
+					hover: 'hsl(var(--scraper-border-hover))',
+				},
+				'scraper-input': 'hsl(var(--scraper-input-bg))',
+			},
+			backgroundImage: {
+				'scraper-gradient-primary': 'var(--scraper-gradient-primary)',
+				'scraper-gradient-card': 'var(--scraper-gradient-card)',
+				'scraper-gradient-glow': 'var(--scraper-gradient-glow)',
+			},
+			boxShadow: {
+				'scraper-sm': 'var(--scraper-shadow-sm)',
+				'scraper-md': 'var(--scraper-shadow-md)',
+				'scraper-lg': 'var(--scraper-shadow-lg)',
+				'scraper-glow': 'var(--scraper-shadow-glow)',
+			},
+			transitionProperty: {
+				'scraper': 'var(--scraper-transition)',
+				'scraper-fast': 'var(--scraper-transition-fast)',
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
