@@ -58,8 +58,27 @@ const FloatingInput = ({ onSendMessage, disabled = false }: FloatingInputProps) 
     console.log('Image upload clicked');
   };
 
+  const handlePromptSubmit = (e?: React.FormEvent) => {
+    e?.preventDefault();
+    
+    if (!message.trim() || disabled) return;
+
+    const currentSession = getCurrentSession();
+    if (!currentSession) {
+      createSession();
+    }
+
+    addMessage({
+      content: message.trim(),
+      role: 'user',
+    });
+
+    onSendMessage?.(message.trim());
+    setMessage('');
+  };
+
   return (
-    <div className="fixed bottom-0 left-0 right-0 p-4 z-30">
+    <div className="relative bottom-0 left-0 right-0 p-4 z-30">
       <div className="max-w-4xl mx-auto">
         {/* Input Container */}
         <div className="bg-scraper-bg-card border border-scraper-border rounded-2xl shadow-scraper-lg backdrop-blur-sm">

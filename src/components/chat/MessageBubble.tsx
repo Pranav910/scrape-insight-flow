@@ -45,14 +45,6 @@ const MessageBubble = ({ message }: MessageBubbleProps) => {
                 </Button>
               </div>
               
-              <div className="flex items-center space-x-2">
-                <span className="text-scraper-text-muted text-xs">
-                  {formatTime(message.timestamp)}
-                </span>
-                <span className="font-medium text-scraper-text-primary text-sm">
-                  You
-                </span>
-              </div>
             </div>
 
             {/* Message Content */}
@@ -83,14 +75,6 @@ const MessageBubble = ({ message }: MessageBubbleProps) => {
           {/* Content */}
           <div className="flex-1 space-y-2">
             <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <span className="font-medium text-scraper-text-primary text-sm">
-                  WebScraper AI
-                </span>
-                <span className="text-scraper-text-muted text-xs">
-                  {formatTime(message.timestamp)}
-                </span>
-              </div>
               
               {/* Action Buttons */}
               <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">

@@ -16,9 +16,9 @@ const getMockResponse = (userMessage: string): { response: string; sources: Scra
   let response = '';
 
   // Check if message is about scraping or data extraction
-  if (userMessage.toLowerCase().includes('price') || userMessage.toLowerCase().includes('scrape') || 
-      userMessage.toLowerCase().includes('amazon') || userMessage.toLowerCase().includes('flipkart')) {
-    
+  if (userMessage.toLowerCase().includes('price') || userMessage.toLowerCase().includes('scrape') ||
+    userMessage.toLowerCase().includes('amazon') || userMessage.toLowerCase().includes('flipkart')) {
+
     // Generate mock sources
     mockSources.push(
       {
@@ -71,7 +71,8 @@ const ChatInterface = ({ onSourcesUpdate }: ChatInterfaceProps) => {
   const [isTyping, setIsTyping] = useState(false);
   const [currentSources, setCurrentSources] = useState<ScrapedSource[]>([]);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
-  
+  const [messages, setMessages] = useState<Message[]>([])
+
   const { getCurrentSession, addMessage } = useChatStorage();
   const currentSession = getCurrentSession();
 
@@ -91,28 +92,33 @@ const ChatInterface = ({ onSourcesUpdate }: ChatInterfaceProps) => {
     // Simulate progressive loading
     for (let i = 0; i < sources.length; i++) {
       await new Promise(resolve => setTimeout(resolve, 1500 + Math.random() * 1000));
-      
-      const updatedSources = loadingSources.map((source, index) => 
+
+      const updatedSources = loadingSources.map((source, index) =>
         index <= i ? { ...source, status: 'success' as const } : source
       );
-      
+
       setCurrentSources(updatedSources);
       onSourcesUpdate?.(updatedSources);
     }
   };
 
   const handleSendMessage = async (message: string) => {
-    // Add user message first
-    addMessage({
-      content: message,
-      role: 'user',
-    });
-    
+
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: crypto.randomUUID(), // Generates a unique ID
+        content: message,
+        role: 'user',
+      }
+    ]);
+
+
     setIsTyping(true);
-    
+
     // Get mock response and sources
     const { response, sources } = getMockResponse(message);
-    
+
     // If there are sources, simulate the scraping process
     if (sources.length > 0) {
       await simulateScrapingProcess(sources);
@@ -120,16 +126,19 @@ const ChatInterface = ({ onSourcesUpdate }: ChatInterfaceProps) => {
 
     // Simulate AI thinking time
     await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Add AI response
-    addMessage({
-      content: response,
-      role: 'assistant',
-      sources: sources.length > 0 ? sources : undefined,
-    });
-    
+
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: crypto.randomUUID(),
+        content: response,
+        role: 'assistant',
+        sources: sources.length > 0 ? sources : undefined,
+      }
+    ]);
+
     setIsTyping(false);
-    
+
     // Clear sources after some time if no more messages
     if (sources.length > 0) {
       setTimeout(() => {
@@ -139,12 +148,49 @@ const ChatInterface = ({ onSourcesUpdate }: ChatInterfaceProps) => {
     }
   };
 
+  const handleSendPrompt = async (message: string) => {
+
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: crypto.randomUUID(), // Generates a unique ID
+        content: message,
+        role: 'user',
+      }
+    ]);
+
+    setIsTyping(true);
+
+    // Get mock response and sources
+    const { response, sources } = getMockResponse(message);
+
+    // If there are sources, simulate the scraping process
+    if (sources.length > 0) {
+      await simulateScrapingProcess(sources);
+    }
+
+    // Simulate AI thinking time
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: crypto.randomUUID(),
+        content: response,
+        role: 'assistant',
+        sources: sources.length > 0 ? sources : undefined,
+      }
+    ]);
+
+    setIsTyping(false);
+  };
+
   return (
     <div className="flex flex-col h-full">
       {/* Messages Area */}
       <ScrollArea className="flex-1 px-4" ref={scrollAreaRef}>
         <div className="max-w-4xl mx-auto py-8">
-          {!currentSession || currentSession.messages.length === 0 ? (
+          {messages.length === 0 ? (
             // Welcome Screen
             <div className="text-center py-16">
               <div className="w-16 h-16 bg-scraper-gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-scraper-glow">
@@ -152,16 +198,16 @@ const ChatInterface = ({ onSourcesUpdate }: ChatInterfaceProps) => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9v-9m0-9v9" />
                 </svg>
               </div>
-              
+
               <h1 className="text-3xl font-bold text-scraper-text-primary mb-4">
                 Welcome to WebScraper AI
               </h1>
-              
+
               <p className="text-scraper-text-secondary text-lg mb-8 max-w-2xl mx-auto">
-                Your intelligent web data extraction assistant. I can scrape websites, 
+                Your intelligent web data extraction assistant. I can scrape websites,
                 compare prices, extract content, and analyze data from multiple sources in real-time.
               </p>
-              
+
               <div className="grid md:grid-cols-2 gap-4 max-w-2xl mx-auto text-left">
                 <div className="bg-scraper-bg-card border border-scraper-border rounded-xl p-6">
                   <h3 className="text-scraper-text-primary font-semibold mb-2">Price Monitoring</h3>
@@ -169,7 +215,7 @@ const ChatInterface = ({ onSourcesUpdate }: ChatInterfaceProps) => {
                     "Compare MacBook prices across Amazon, Flipkart, and other e-commerce sites"
                   </p>
                 </div>
-                
+
                 <div className="bg-scraper-bg-card border border-scraper-border rounded-xl p-6">
                   <h3 className="text-scraper-text-primary font-semibold mb-2">Data Extraction</h3>
                   <p className="text-scraper-text-muted text-sm">
@@ -181,10 +227,10 @@ const ChatInterface = ({ onSourcesUpdate }: ChatInterfaceProps) => {
           ) : (
             // Chat Messages
             <div className="space-y-1">
-              {currentSession.messages.map((message) => (
+              {messages.map((message) => (
                 <MessageBubble key={message.id} message={message} />
               ))}
-              
+
               {isTyping && <TypingIndicator />}
             </div>
           )}
@@ -192,7 +238,7 @@ const ChatInterface = ({ onSourcesUpdate }: ChatInterfaceProps) => {
       </ScrollArea>
 
       {/* Input Area */}
-      <FloatingInput onSendMessage={handleSendMessage} disabled={isTyping} />
+      <FloatingInput onSendMessage={handleSendPrompt} disabled={isTyping} />
     </div>
   );
 };

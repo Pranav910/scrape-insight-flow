@@ -1,4 +1,4 @@
-import { Brain, BarChart3, Settings } from 'lucide-react';
+import { Brain, BarChart3, Settings, LayoutDashboard } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import {
@@ -41,7 +41,7 @@ const Header = () => {
                 : 'text-scraper-text-secondary hover:text-scraper-text-primary hover:bg-scraper-bg-card'
             }`}
           >
-            <BarChart3 className="w-4 h-4" />
+            <LayoutDashboard />
             <span className="hidden md:inline">Dashboard</span>
           </Link>
 

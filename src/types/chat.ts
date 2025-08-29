@@ -3,7 +3,6 @@ export interface Message {
   content: string;
   role: 'user' | 'assistant';
   sources?: ScrapedSource[];
-  timestamp: string;
 }
 
 export interface ScrapedSource {
