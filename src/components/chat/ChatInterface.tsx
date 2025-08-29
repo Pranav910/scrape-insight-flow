@@ -102,6 +102,12 @@ const ChatInterface = ({ onSourcesUpdate }: ChatInterfaceProps) => {
   };
 
   const handleSendMessage = async (message: string) => {
+    // Add user message first
+    addMessage({
+      content: message,
+      role: 'user',
+    });
+    
     setIsTyping(true);
     
     // Get mock response and sources
